@@ -1,9 +1,3 @@
-#Pong game : in Python
-#using Online plateform  http://www.codeskulptor.org/
-# Sudhanshu Patel
-# 5/4/2014
-# project still in progress ....
-
 import simplegui
 import random
 
@@ -29,8 +23,8 @@ def init():
     global score1,score2 #these are int
     paddle1_pos = [[4, 165], [4, 235]]
     paddle2_pos = [[596, 165], [596, 235]]
-    paddle1_vel =3
-    paddle2_vel =3
+    paddle1_vel =0
+    paddle2_vel =0
     score1 =0
     score2 =0
     ball_init()
@@ -44,9 +38,19 @@ def draw(c):
     c.draw_line([pad_width,0],[pad_width,height],1,"White")
     c.draw_line([width - pad_width,0],[width - pad_width,height],1,"white")
     
-    #draw paddies
-    c.draw_polygon(paddle1_pos, 8,"white")
-    c.draw_polygon(paddle2_pos, 8,"white")
+    #paddies
+                 #paddle 1 movement
+    if  paddle1_pos[0][1] >= 0 and paddle1_pos[1][1] <= 400 :
+        paddle1_pos[0][1] +=paddle1_vel
+        paddle1_pos[1][1] +=paddle1_vel
+    c.draw_polygon(paddle1_pos, 8,"white")#paddle 1 draw 
+    
+               #paddle 2 movement
+    if  paddle2_pos[0][1] >= 0 and paddle2_pos[1][1] <= 400 :
+        paddle2_pos[0][1] +=paddle2_vel
+        paddle2_pos[1][1] +=paddle2_vel
+    c.draw_polygon(paddle2_pos, 8,"white") #paddle 2 draw 
+    
     #update ball
     ball_pos[0]+=ball_vel[0]
     ball_pos[1]+=ball_vel[1]
@@ -65,16 +69,19 @@ def draw(c):
     
 def keydown(key):
     global paddle1_vel,paddle2_vel
-    if key == simplegui.KEY_MAP["up"] and  paddle2_pos[0][1] >= 0:
-        paddle2_pos[0][1] -=paddle2_vel
-        paddle2_pos[1][1] -=paddle2_vel
-    elif key == key == simplegui.KEY_MAP["down"] and paddle2_pos[1][1] <= 400:
-        paddle2_pos[0][1] +=paddle2_vel
-        paddle2_pos[1][1] +=paddle2_vel
+    if key == simplegui.KEY_MAP["up"]:  #paddle 2
+        paddle2_vel = -3       
+    elif key == simplegui.KEY_MAP["down"]:
+        paddle2_vel = 3
+    elif key == simplegui.KEY_MAP["w"]: #paddle 1
+         paddle1_vel = -3
+    elif key == simplegui.KEY_MAP["s"]:
+         paddle1_vel = 3
     
 def keyup(key):
     global paddle1_vel,paddle2_vel
-    
+    paddle1_vel = 0
+    paddle2_vel = 0
     
 # create Frame
 f = simplegui.create_frame("Pong",width,height)
