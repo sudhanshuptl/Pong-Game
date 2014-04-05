@@ -1,6 +1,13 @@
+    #Pong game : in Python
+    #using Online plateform  http://www.codeskulptor.org/
+    # Sudhanshu Patel
+    # 5/4/2014
+    # project still in progress ....
+
+
 import simplegui
 import random
-
+#globals 
 width =600
 height = 400
 ball_radii = 10
@@ -8,8 +15,6 @@ pad_width = 8
 pad_height = 80
 half_pad_width = pad_width/2
 half_pad_height = pad_height/2
-
-
 #helper function that spawn ball,return position vector & velocity vector
 #if right is true spawn to right ,else spawn to left
 def ball_init():
@@ -41,15 +46,29 @@ def draw(c):
     
     #####################paddies
                  #paddle 1 movement
-    if  paddle1_pos[0][1] >= 0 and paddle1_pos[1][1] <= 400:
+    if  paddle1_pos[0][1] >0 and paddle1_pos[1][1] <400 :
         paddle1_pos[0][1] +=paddle1_vel
         paddle1_pos[1][1] +=paddle1_vel
+    elif(paddle1_pos[0][1] == 0 and paddle1_vel > 0):
+        paddle1_pos[0][1] +=paddle1_vel
+        paddle1_pos[1][1] +=paddle1_vel
+    elif(paddle1_pos[1][1] == 400 and  paddle1_vel < 0):
+        paddle1_pos[0][1] +=paddle1_vel
+        paddle1_pos[1][1] +=paddle1_vel
+        
     c.draw_polygon(paddle1_pos, 8,"white")#paddle 1 draw 
     
                #paddle 2 movement
-    if  paddle2_pos[0][1] >= 0 and paddle2_pos[1][1] < 400 :
+    if  paddle2_pos[0][1] > 0 and paddle2_pos[1][1] < 400 :
         paddle2_pos[0][1] +=paddle2_vel
         paddle2_pos[1][1] +=paddle2_vel
+    elif(paddle2_pos[0][1] == 0 and paddle2_vel > 0):
+        paddle2_pos[0][1] +=paddle2_vel
+        paddle2_pos[1][1] +=paddle2_vel
+    elif(paddle2_pos[1][1] == 400 and  paddle2_vel < 0):
+        paddle2_pos[0][1] +=paddle2_vel
+        paddle2_pos[1][1] +=paddle2_vel
+        
     c.draw_polygon(paddle2_pos, 8,"white") #paddle 2 draw 
     
     ########################update ball
@@ -97,6 +116,7 @@ f = simplegui.create_frame("Pong",width,height)
 f.set_draw_handler(draw)
 f.set_keydown_handler(keydown)
 f.set_keyup_handler(keyup)
+
 f.add_button("Restart",init,100)
 
 init()
