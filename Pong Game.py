@@ -14,15 +14,16 @@ half_pad_height = pad_height/2
 #if right is true spawn to right ,else spawn to left
 def ball_init():
     global ball_pos,ball_vel #these are vector stored in list
+    global paddle1_pos,paddle2_pos
     ball_pos=[300,200]
-    ball_vel=[random.choice([1,-1,2, -2]),random.choice([3,1, -1,0, 2, -2,-3])]
+    ball_vel=[random.choice([-3, 3]),random.choice([3,-3])]
+    paddle1_pos = [[4, 165], [4, 235]]
+    paddle2_pos = [[596, 165], [596, 235]]
     
 
 def init():
-    global paddle1_pos,paddle2_pos,paddle1_vel,paddle2_vel #these are floats 
+    global paddle1_vel,paddle2_vel #these are floats 
     global score1,score2 #these are int
-    paddle1_pos = [[4, 165], [4, 235]]
-    paddle2_pos = [[596, 165], [596, 235]]
     paddle1_vel =0
     paddle2_vel =0
     score1 =0
@@ -38,30 +39,38 @@ def draw(c):
     c.draw_line([pad_width,0],[pad_width,height],1,"White")
     c.draw_line([width - pad_width,0],[width - pad_width,height],1,"white")
     
-    #paddies
+    #####################paddies
                  #paddle 1 movement
-    if  paddle1_pos[0][1] >= 0 and paddle1_pos[1][1] <= 400 :
+    if  paddle1_pos[0][1] >= 0 and paddle1_pos[1][1] <= 400:
         paddle1_pos[0][1] +=paddle1_vel
         paddle1_pos[1][1] +=paddle1_vel
     c.draw_polygon(paddle1_pos, 8,"white")#paddle 1 draw 
     
                #paddle 2 movement
-    if  paddle2_pos[0][1] >= 0 and paddle2_pos[1][1] <= 400 :
+    if  paddle2_pos[0][1] >= 0 and paddle2_pos[1][1] < 400 :
         paddle2_pos[0][1] +=paddle2_vel
         paddle2_pos[1][1] +=paddle2_vel
     c.draw_polygon(paddle2_pos, 8,"white") #paddle 2 draw 
     
-    #update ball
+    ########################update ball
     ball_pos[0]+=ball_vel[0]
     ball_pos[1]+=ball_vel[1]
                                           #reflect along x
-    if(ball_pos[0] >= 577 or ball_pos[0]<=20):
-        ball_vel[0]= - ball_vel[0]   
-                                            
+    if(ball_pos[0]<=20 and  ball_pos[1]>= paddle1_pos[0][1] and ball_pos[1]<= paddle1_pos[1][1]): # for paddle 1
+        ball_vel[0]= - ball_vel[0]
+    elif(ball_pos[0] <20):
+        score2+=1
+        ball_init()
+    elif(ball_pos[0] >= 577 and ball_pos[1]>= paddle2_pos[0][1] and ball_pos[1]<= paddle2_pos[1][1]): #for paddle 2
+        ball_vel[0]= - ball_vel[0]
+    elif(ball_pos[0] > 577):
+        score1+=1
+        ball_init()
+        
     elif(ball_pos[1] <= 15 or ball_pos[1] >= 385 ):
         ball_vel[1] = -ball_vel[1]          #reflect along y
  
-    #draw ball & score
+    #######################draw ball & score
     c.draw_circle((ball_pos[0], ball_pos[1]), ball_radii,20,'green')
     
     c.draw_text(str(score1), (150, 50), 24, 'Yellow')
