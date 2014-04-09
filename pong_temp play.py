@@ -1,12 +1,18 @@
     #Pong game : in Python
+	
+	# Sudhanshu Patel
+    # 9/4/2014
+    
+	#Just copy this code & past it to http://www.codeskulptor.org/ and run this code :)
+	
     #using Online plateform  http://www.codeskulptor.org/
-    # Sudhanshu Patel
-    # 5/4/2014
     # project still in progress ....
 
 
 import simplegui
 import random
+import math
+
 #globals 
 width =600
 height = 400
@@ -25,16 +31,37 @@ def start():
 def stop():
     global sf
     sf=0
-    
+
 def ball_init():
     global ball_pos,ball_vel #these are vector stored in list
     global paddle1_pos,paddle2_pos
     ball_pos=[300,200]
-    ball_vel=[random.choice([-3, 3]),random.choice([3,-3])]
-    paddle1_pos = [[4, 165], [4, 235]]
-    paddle2_pos = [[596, 165], [596, 235]]
+    ball_vel=[random.choice([-3,3 ]),random.choice([3,-3])]
+    paddle1_pos = [[4, 155], [4, 245]]
+    paddle2_pos = [[596, 155], [596, 245]]
     
-
+def tick(): #increase velocity by 1 unit after each 3 second 
+    global ball_vel
+    p = math.sqrt(ball_vel[0]**2 +ball_vel[1]**2)
+    p+=0.25
+    if(ball_vel[0] >= 0 and ball_vel[1] >=0):  #first cordinate
+        o=math.atan(ball_vel[1]/ball_vel[0])
+        ball_vel[0]=p*math.cos(o)
+        ball_vel[1]=p*math.sin(o)
+    elif(ball_vel[0]<=0 and ball_vel[1] >=0): #second cordinate
+        o=math.atan(ball_vel[1]/abs(ball_vel[0]))
+        ball_vel[0] = -(p*math.cos(o))
+        ball_vel[1] = p*math.sin(o)
+    elif(ball_vel[0] <=0 and ball_vel[1] <=0): #third cordinate
+        o = math.atan(ball_vel[1]/ball_vel[0]) #critical point
+        ball_vel[0] = -(p*math.cos(o))
+        ball_vel[1] = -(p*math.sin(o))
+    elif(ball_vel[0] >=0 and ball_vel[1]<=0): #fourth cordinate
+        o=math.atan(abs(ball_vel[1])/ball_vel[0])
+        ball_vel[0] = p*math.cos(o)
+        ball_vel[1] = -(p*math.sin(o))
+        
+    
 def init():
     global paddle1_vel,paddle2_vel #these are floats 
     global score1,score2 #these are int
@@ -43,7 +70,7 @@ def init():
     score1 =0
     score2 =0
     ball_init()
-    
+    timer.start()
 
 def draw(c):
     if(sf):
@@ -104,7 +131,7 @@ def draw(c):
             ball_vel[1] = -ball_vel[1]          #reflect along y
      
         #######################draw ball & score
-        c.draw_circle((ball_pos[0], ball_pos[1]), ball_radii,20,'green')
+        c.draw_circle((ball_pos[0], ball_pos[1]), ball_radii,15,'green')
         
         c.draw_text(str(score1), (150, 50), 24, 'Yellow')
         c.draw_text(str(score2), (450, 50), 24, 'Yellow')
@@ -117,13 +144,13 @@ def draw(c):
 def keydown(key):
     global paddle1_vel,paddle2_vel
     if key == simplegui.KEY_MAP["up"]:  #paddle 2
-        paddle2_vel = -3       
+        paddle2_vel = -5       
     elif key == simplegui.KEY_MAP["down"]:
-        paddle2_vel = 3
+        paddle2_vel = 5
     elif key == simplegui.KEY_MAP["w"]: #paddle 1
-         paddle1_vel = -3
+         paddle1_vel = -5
     elif key == simplegui.KEY_MAP["s"]:
-         paddle1_vel = 3
+         paddle1_vel = 5
     
 def keyup(key):
     global paddle1_vel,paddle2_vel
@@ -137,6 +164,5 @@ f.set_keydown_handler(keydown)
 f.set_keyup_handler(keyup)
 f.add_button("start",start,100)
 f.add_button("Restart",stop,100)
-
-
+timer=simplegui.create_timer(750,tick)
 f.start()
